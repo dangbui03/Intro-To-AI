@@ -41,4 +41,6 @@ def split_data(source):
     with open(source, 'r') as src:
         all_puzzles = src.readlines()
         return all_puzzles
-#input_board_auto('boards.txt', 'harder_puzzles.txt')
+# def main():
+#     input_board_auto('boards.txt', 'easier_puzzles.txt')
+# main()

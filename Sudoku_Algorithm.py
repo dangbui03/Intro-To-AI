@@ -1,7 +1,7 @@
-from copy import deepcopy
-from sys import argv
 import time
 import random
+import sys
+import tracemalloc
 
 board = [
 [5, 3, 0, 0, 7, 0, 0, 0, 0],
@@ -69,62 +69,7 @@ def valid(board, num, pos):
 
     return True
 
-def solve(board):
-    find = find_empty(board)
-    if not find:
-        return True
-    else:
-        row, col = find
 
-    for i in range(1,10):
-        if valid(board, i, (row, col)):
-            board[row][col] = i
-
-            if solve(board):
-                return True
-
-            board[row][col] = 0
-    return False
-
-# Function for BFS solution
-def solveBFS(board):
-    # search for the first empty cell
-    find = find_empty(board)
-
-    if (not find):
-        # if not have empty cells, then the sudoku is solved
-        return True
-    else:
-        # if have a empty cell, get the row and column index
-        row, col = find
-
-    # create a array of possible board solutions
-    solutions = []
-
-    # loop to test all possible values 1 to 9
-    for i in range(1,10):
-        # verify if is a valid number, considering sudoku rules
-        if (valid(board, i , (row,col))):
-            # copy the actual board to a new one
-            newList = deepcopy(board)
-
-            # insert the new valid value to the new board
-            newList[row][col] = i
-
-            # append board to the list
-            solutions.append(newList)
-
-    # loop to test all possibilities for the last validation
-    for i in range(len(solutions)):
-        # call recursive solveBFS to continue the actual solution board
-        # if the result is true, the sudoku has been solved
-        # if not, continue to next possible board
-        if (solveBFS(solutions[i])):
-            return True
-
-    return False
-
-# Function for DFS solution
 def solveDFS(board):
     # search for the first empty cell
     find = find_empty(board)
@@ -211,11 +156,26 @@ def solveAStar(board):
             board[row][col] = 0
 
         return False
-    
+user_input = sys.argv[1]
+print("Bạn đã nhập:", user_input)  
 print_board(board)
 startTime = time.time()
-solveAStar(board)
-print("Solved:")
+if user_input == "DFS":
+    solveDFS(board)
+elif user_input == "AStar":
+    solveAStar(board)
 elapsedTime = time.time() - startTime
+print("Solved:")
 print("Elapsed time(s): " + str(elapsedTime))
-print_board(board)
+tracemalloc.start()
+snapshot1 = tracemalloc.take_snapshot()
+if user_input == "DFS":
+    solveDFS(board)
+elif user_input == "AStar":
+    solveAStar(board)
+snapshot2 = tracemalloc.take_snapshot()
+tracemalloc.stop()
+stats = snapshot2.compare_to(snapshot1, 'lineno')
+print("Bộ nhớ được tiêu tốn:")
+for stat in stats[:10]:  # In ra 10 dòng code tiêu tốn bộ nhớ nhất
+    print(stat)
