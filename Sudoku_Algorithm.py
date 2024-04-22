@@ -3,7 +3,7 @@ import random
 import sys
 import tracemalloc
 
-board = [
+board = [[[
 [5, 3, 0, 0, 7, 0, 0, 0, 0],
 [6, 0, 0, 1, 9, 5, 0, 0, 0],
 [0, 9, 8, 0, 0, 0, 0, 6, 0],
@@ -13,18 +13,37 @@ board = [
 [0, 6, 0, 0, 0, 0, 2, 8, 0],
 [0, 0, 0, 4, 1, 9, 0, 0, 5],
 [0, 0, 0, 0, 8, 0, 0, 7, 9]
-]
-# board = [
-# [9, 0, 0, 0, 0, 0, 6, 0, 0],
-# [6, 0, 1, 0, 2, 5, 3, 0, 9],
-# [0, 0, 7, 0, 3, 6, 0, 8, 0],
-# [0, 5, 0, 0, 0, 4, 0, 0, 0],
-# [8, 0, 4, 2, 5, 0, 7, 0, 6],
-# [0, 7, 0, 0, 6, 0, 4, 5, 0],
-# [2, 0, 3, 5, 4, 0, 0, 9, 0],
-# [0, 0, 9, 0, 7, 8, 2, 0, 3],
-# [0, 0, 0, 0, 0, 0, 1, 0, 0]
-# ]
+],[
+[5, 3, 0, 0, 7, 0, 0, 0, 0],
+[6, 0, 0, 1, 9, 5, 0, 0, 0],
+[0, 9, 8, 0, 0, 0, 0, 6, 0],
+[8, 0, 0, 0, 6, 0, 0, 0, 3],
+[4, 0, 0, 8, 0, 3, 0, 0, 1],
+[7, 0, 0, 0, 2, 0, 0, 0, 6],
+[0, 6, 0, 0, 0, 0, 2, 8, 0],
+[0, 0, 0, 4, 1, 9, 0, 0, 5],
+[0, 0, 0, 0, 8, 0, 0, 7, 9]
+]],[[
+[9, 0, 0, 0, 0, 0, 6, 0, 0],
+[6, 0, 1, 0, 2, 5, 3, 0, 9],
+[0, 0, 7, 0, 3, 6, 0, 8, 0],
+[0, 5, 0, 0, 0, 4, 0, 0, 0],
+[8, 0, 4, 2, 5, 0, 7, 0, 6],
+[0, 7, 0, 0, 6, 0, 4, 5, 0],
+[2, 0, 3, 5, 4, 0, 0, 9, 0],
+[0, 0, 9, 0, 7, 8, 2, 0, 3],
+[0, 0, 0, 0, 0, 0, 1, 0, 0]
+],[
+[9, 0, 0, 0, 0, 0, 6, 0, 0],
+[6, 0, 1, 0, 2, 5, 3, 0, 9],
+[0, 0, 7, 0, 3, 6, 0, 8, 0],
+[0, 5, 0, 0, 0, 4, 0, 0, 0],
+[8, 0, 4, 2, 5, 0, 7, 0, 6],
+[0, 7, 0, 0, 6, 0, 4, 5, 0],
+[2, 0, 3, 5, 4, 0, 0, 9, 0],
+[0, 0, 9, 0, 7, 8, 2, 0, 3],
+[0, 0, 0, 0, 0, 0, 1, 0, 0] 
+]]]
 
 def print_board(board):
     for i in range(len(board)):
@@ -156,23 +175,29 @@ def solveAStar(board):
             board[row][col] = 0
 
         return False
+    
 user_input = sys.argv[1]
 print("Bạn đã nhập:", user_input)  
-print_board(board)
+board_Time = board[0][0] 
+board_Memmory = board[0][1]
+print_board(board_Memmory)
+print_board(board_Time)
 startTime = time.time()
 if user_input == "DFS":
-    solveDFS(board)
+    solveDFS(board_Time)
 elif user_input == "AStar":
-    solveAStar(board)
+    solveAStar(board_Time)
 elapsedTime = time.time() - startTime
 print("Solved:")
 print("Elapsed time(s): " + str(elapsedTime))
+print_board(board_Time)
+print_board(board_Memmory)
 tracemalloc.start()
 snapshot1 = tracemalloc.take_snapshot()
 if user_input == "DFS":
-    solveDFS(board)
+    solveDFS(board_Memmory)
 elif user_input == "AStar":
-    solveAStar(board)
+    solveAStar(board_Memmory)
 snapshot2 = tracemalloc.take_snapshot()
 tracemalloc.stop()
 stats = snapshot2.compare_to(snapshot1, 'lineno')

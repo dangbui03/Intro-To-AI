@@ -145,17 +145,17 @@ def in_box(board, row, column, num):
     return False
 
 ''''''
-def solve(window, font, board, row = 0, col = 0):
+def solveDFS(window, font, board, row = 0, col = 0):
     
     if row == 9:
         return True #found solution
     elif col == 9:
         #move to next row, and start on column 0
         
-        return solve(window, font, board, row + 1, 0)
+        return solveDFS(window, font, board, row + 1, 0)
     elif board[row][col] != 0:
         #space taken, move to next position (col + 1)
-        return solve(window, font, board, row, col+1)
+        return solveDFS(window, font, board, row, col+1)
     else: #empty space, and not out of bounds
         for num in range(1,10): #valid sudoku numbers
             fill_space(window, board, row, col, EMPTY_COLOR)
@@ -163,11 +163,79 @@ def solve(window, font, board, row = 0, col = 0):
             if safe(board, row, col, num):
                 board[row][col] = num
                 fill_board(window, font, board)
-                if solve(window, font, board, row, col+1): #if solution found
+                if solveDFS(window, font, board, row, col+1): #if solution found
                     return True #stop recursion
                 board[row][col] = 0 #solution not found, reset space
                 
         return False #no valid solution, move on
+def find_empty(board):
+    for i in range(len(board)):
+        for j in range(len(board[0])):
+            if board[i][j] == 0:
+                return (i, j)  # row, col
+    return None
+
+def solveAStar(window, front,board):
+     # create a array of possible board solutions
+    solutions = []
+
+    # loop to run in all board
+    for i in range(9):
+        for j in range(9):
+            # create a list with all posibilities
+            x = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+            # check if cell is empty
+            if (board[i][j] == 0):
+                # loop to verify and remove incorrect numbers from row, column and quadrant
+                for k in range(9):
+                    if (board[i][k] != 0 and board[i][k] in x):
+                        x.remove(board[i][k])
+                    if (board[k][j] != 0 and board[k][j] in x):
+                        x.remove(board[k][j])
+                quad_x = j // 3 #used integer division to get the integer value from positions
+                quad_y = i // 3
+                for m in range(quad_y * 3, quad_y * 3 + 3):
+                    for n in range(quad_x * 3, quad_x * 3 + 3):
+                        if (board[m][n] != 0 and board[m][n] in x and (m, n) != (i,j)):
+                            x.remove(board[m][n])
+                tmp = []
+                tmp.append(i)
+                tmp.append(j)
+                tmp.append(len(x))
+                tmp.append(x)
+
+                # insert ordered, lowest first
+                index = 0
+                for k in range(len(solutions)):
+                    if (solutions[k][2] > tmp[2] and tmp[2] > 0):
+                        index = k
+                        break
+                    else:
+                        index+=1
+                solutions.insert(index, tmp)
+
+    if (len(solutions) > 0):
+        row = solutions[0][0]
+        col = solutions[0][1]
+
+        # loop in array of solutions of current recursion
+        for i in solutions[0][3]:
+            # insert the valid value to board
+            fill_space(window, board, row, col, EMPTY_COLOR)
+            pg.display.update()
+            board[row][col] = i
+            fill_board(window, front, board)
+            # if not find empty cell print result or call recursive to next cell
+            if (not find_empty(board)):
+                return True
+            elif solveAStar(window,front,board):
+                return True
+            # if not, change the actual valid value to 0 and continue testing next value
+            board[row][col] = 0
+
+        return False
+
 #---------------------------- END OF SOLVER SECTION -------------------------
 #main loop
 def main():
@@ -231,7 +299,8 @@ def main():
             if start_button.clicked:
                 #if 'solve' button pressed, solve the board
                 start_time = time.time() #time how long it takes to solve
-                solve(window, font, board, 0, 0)
+
+                solveAStar(window, font, board)
                 end_time = time.time()   #ending time
                 exec_time = end_time - start_time #elapsed time
                 #elapsed = pix_font.render(str(exec_time), False, LINE_COLOR)\
