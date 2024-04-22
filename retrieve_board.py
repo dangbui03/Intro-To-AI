@@ -1,5 +1,6 @@
 import random 
 from os import path
+
 def get_board(file_name):
     with open(path.join(file_name)) as file:
         boards = file.readlines()
@@ -16,11 +17,6 @@ def get_board(file_name):
 
     return board
 
-'''
-Use if we already have a Sudoku board in text format.
-The format we use is all 81 numbers in a board in one line.
-Link to boards used for this project: https://www.printable-sudoku-puzzles.com/wfiles/
-'''
 def input_board_auto(output, source):
     done = False
     puzzles = split_data(source)
@@ -44,3 +40,7 @@ def split_data(source):
 # def main():
 #     input_board_auto('boards.txt', 'easier_puzzles.txt')
 # main()
+def main():
+    board = get_board('boards.txt')
+    print(board)
+main()

@@ -1,2 +1,1 @@
-if (not find_empty(board)):
-            #     return True
+initial_memory = psutil.virtual_memory().used

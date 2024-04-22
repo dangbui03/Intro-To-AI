@@ -1,50 +1,8 @@
 import time
 import random
 import sys
-import tracemalloc
-
-board = [[[
-[5, 3, 0, 0, 7, 0, 0, 0, 0],
-[6, 0, 0, 1, 9, 5, 0, 0, 0],
-[0, 9, 8, 0, 0, 0, 0, 6, 0],
-[8, 0, 0, 0, 6, 0, 0, 0, 3],
-[4, 0, 0, 8, 0, 3, 0, 0, 1],
-[7, 0, 0, 0, 2, 0, 0, 0, 6],
-[0, 6, 0, 0, 0, 0, 2, 8, 0],
-[0, 0, 0, 4, 1, 9, 0, 0, 5],
-[0, 0, 0, 0, 8, 0, 0, 7, 9]
-],[
-[5, 3, 0, 0, 7, 0, 0, 0, 0],
-[6, 0, 0, 1, 9, 5, 0, 0, 0],
-[0, 9, 8, 0, 0, 0, 0, 6, 0],
-[8, 0, 0, 0, 6, 0, 0, 0, 3],
-[4, 0, 0, 8, 0, 3, 0, 0, 1],
-[7, 0, 0, 0, 2, 0, 0, 0, 6],
-[0, 6, 0, 0, 0, 0, 2, 8, 0],
-[0, 0, 0, 4, 1, 9, 0, 0, 5],
-[0, 0, 0, 0, 8, 0, 0, 7, 9]
-]],[[
-[9, 0, 0, 0, 0, 0, 6, 0, 0],
-[6, 0, 1, 0, 2, 5, 3, 0, 9],
-[0, 0, 7, 0, 3, 6, 0, 8, 0],
-[0, 5, 0, 0, 0, 4, 0, 0, 0],
-[8, 0, 4, 2, 5, 0, 7, 0, 6],
-[0, 7, 0, 0, 6, 0, 4, 5, 0],
-[2, 0, 3, 5, 4, 0, 0, 9, 0],
-[0, 0, 9, 0, 7, 8, 2, 0, 3],
-[0, 0, 0, 0, 0, 0, 1, 0, 0]
-],[
-[9, 0, 0, 0, 0, 0, 6, 0, 0],
-[6, 0, 1, 0, 2, 5, 3, 0, 9],
-[0, 0, 7, 0, 3, 6, 0, 8, 0],
-[0, 5, 0, 0, 0, 4, 0, 0, 0],
-[8, 0, 4, 2, 5, 0, 7, 0, 6],
-[0, 7, 0, 0, 6, 0, 4, 5, 0],
-[2, 0, 3, 5, 4, 0, 0, 9, 0],
-[0, 0, 9, 0, 7, 8, 2, 0, 3],
-[0, 0, 0, 0, 0, 0, 1, 0, 0] 
-]]]
-
+from board_Sudoku_Algorithm import*
+import psutil
 def print_board(board):
     for i in range(len(board)):
         if i % 3 == 0 and i != 0:
@@ -54,7 +12,7 @@ def print_board(board):
             if j % 3 == 0 and j != 0:
                 print(" | ", end="")
                 
-            if j == 8: # at the end of row
+            if j == 8: 
                 print(board[i][j])
             else:
                 print(str(board[i][j]) + " ", end="")
@@ -63,7 +21,7 @@ def find_empty(board):
     for i in range(len(board)):
         for j in range(len(board[0])):
             if board[i][j] == 0:
-                return (i, j)  # row, col
+                return (i, j)  
     return None
 
 def valid(board, num, pos):
@@ -71,36 +29,29 @@ def valid(board, num, pos):
     for i in range(len(board[0])):
         if board[pos[0]][i] == num and pos[1] != i:
             return False
-
     # Check column
     for i in range(len(board)):
         if board[i][pos[1]] == num and pos[0] != i:
             return False
-
     # Check box
     box_x = pos[1] // 3
     box_y = pos[0] // 3
-
     for i in range(box_y*3, box_y*3 + 3):
         for j in range(box_x * 3, box_x*3 + 3):
             if board[i][j] == num and (i,j) != pos:
                 return False
-
     return True
 
-
+#  Backtracking
 def solveDFS(board):
-    # search for the first empty cell
     find = find_empty(board)
 
     if not find:
-        # if not have empty cells, then the sudoku is solved
         return True
     else:
         # if have a empty cell, get the row and column index
         row, col = find
 
-    # loop to test all possible values 1 to 9
     for i in range(1,10):
         # verify if is a valid number, considering sudoku rules
         if (valid(board, i , (row,col))):
@@ -116,7 +67,7 @@ def solveDFS(board):
 
     return False
 
-# Function for AStar solution
+#  AStar 
 def solveAStar(board):
     # create a array of possible board solutions
     solutions = []
@@ -155,8 +106,8 @@ def solveAStar(board):
                         break
                     else:
                         index+=1
-                solutions.insert(index, tmp)
-
+                solutions.insert(index, tmp)    
+                
     if (len(solutions) > 0):
         row = solutions[0][0]
         col = solutions[0][1]
@@ -177,30 +128,32 @@ def solveAStar(board):
         return False
     
 user_input = sys.argv[1]
+num_input = int(sys.argv[2])
+if num_input >=30:
+    num_input =30
 print("Bạn đã nhập:", user_input)  
-board_Time = board[0][0] 
-board_Memmory = board[0][1]
-print_board(board_Memmory)
-print_board(board_Time)
-startTime = time.time()
-if user_input == "DFS":
-    solveDFS(board_Time)
-elif user_input == "AStar":
-    solveAStar(board_Time)
-elapsedTime = time.time() - startTime
-print("Solved:")
-print("Elapsed time(s): " + str(elapsedTime))
-print_board(board_Time)
-print_board(board_Memmory)
-tracemalloc.start()
-snapshot1 = tracemalloc.take_snapshot()
-if user_input == "DFS":
-    solveDFS(board_Memmory)
-elif user_input == "AStar":
-    solveAStar(board_Memmory)
-snapshot2 = tracemalloc.take_snapshot()
-tracemalloc.stop()
-stats = snapshot2.compare_to(snapshot1, 'lineno')
-print("Bộ nhớ được tiêu tốn:")
-for stat in stats[:10]:  # In ra 10 dòng code tiêu tốn bộ nhớ nhất
-    print(stat)
+print("Số bài sudoku mà bạn muốn giải", num_input)
+for i in range(0, num_input):
+    print("Sudoku số:", i + 1)
+    board_Time = board[22][0] 
+    board_Memmory = board[22][1]
+    print_board(board_Time)
+    startTime = time.time()
+    if user_input == "DFS":
+        solveDFS(board_Time)
+    elif user_input == "AStar":
+        solveAStar(board_Time)
+    elapsedTime = time.time() - startTime
+    print("Solved:")
+    print("Elapsed time(s): " + str(elapsedTime))
+    print_board(board_Time)
+
+    initial_memory = psutil.virtual_memory().used
+    if user_input == "DFS":
+        solveDFS(board_Memmory)
+    elif user_input == "AStar":
+        solveAStar(board_Memmory)
+    final_memory = psutil.virtual_memory().used
+    memory_consuption = (final_memory - initial_memory)
+    print("Bộ nhớ được tiêu tốn:", abs(memory_consuption),"byte")
+    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%################################")
