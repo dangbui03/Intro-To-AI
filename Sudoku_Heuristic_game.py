@@ -256,13 +256,13 @@ def main():
 
     #load in images for additional sprites
     instructions = pg.image.load(path.join('sprites', 'instructions.png')).convert() #text instructions
-    # credit = pg.image.load(path.join('sprites', 'credit.png')).convert() 
+    heuristic = pg.image.load(path.join('sprites', 'heuristic.png')).convert() 
     # version = pg.image.load(path.join('sprites', 'version.png')).convert()
     timer = pg.image.load(path.join('sprites', 'timer.png')).convert()
     #scale images
     scale = 3
     instructions = pg.transform.scale(instructions, (191 * scale, 24 * scale))
-    # credit = pg.transform.scale(credit, (112 * scale, 11 * scale))
+    heuristic = pg.transform.scale(heuristic, (112 * scale, 11 * scale))
     # version = pg.transform.scale(version, (85 * scale, 10 * scale))
     timer = pg.transform.scale(timer, (49 * scale * 1.2, 22 * scale * 1.2))
     
@@ -292,7 +292,7 @@ def main():
 
             #additional sprites
             window.blit(instructions, (10, 10))
-            # window.blit(credit, (400, 600))
+            window.blit(heuristic, (400, 600))
             # window.blit(version, (10, 600))
             
             pg.display.update()
