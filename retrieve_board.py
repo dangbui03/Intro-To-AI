@@ -40,7 +40,7 @@ def split_data(source):
 # def main():
 #     input_board_auto('boards.txt', 'easier_puzzles.txt')
 # main()
-def main():
-    board = get_board('boards.txt')
-    print(board)
-main()
+# def main():
+#     board = get_board('boards.txt')
+#     print(board)
+# main()

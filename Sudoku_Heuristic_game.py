@@ -299,7 +299,7 @@ def main():
             if start_button.clicked:
                 #if 'solve' button pressed, solve the board
                 start_time = time.time() #time how long it takes to solve
-
+            
                 solveAStar(window, font, board)
                 end_time = time.time()   #ending time
                 exec_time = end_time - start_time #elapsed time
